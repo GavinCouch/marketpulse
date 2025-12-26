@@ -1,6 +1,27 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { apiGet, apiPost } from "../api.js";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -60,6 +81,67 @@ export default function ProductDetail() {
   if (loading) return <p className="subtle">Loading…</p>;
   if (err) return <p className="error">{err}</p>;
   if (!data) return <p className="subtle">Not found.</p>;
+    // Build chart data from pricePoints (oldest -> newest)
+  const pointsAsc = [...data.pricePoints].reverse();
+
+  const labels = pointsAsc.map((pp) => {
+    // recordedAt is "YYYY-MM-DD HH:MM:SS" from SQLite; make it readable
+    const s = String(pp.recordedAt || "");
+    // show "MM-DD HH:MM" if possible
+    if (s.length >= 16) return `${s.slice(5, 10)} ${s.slice(11, 16)}`;
+    return s;
+  });
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: "Resale Price (USD)",
+        data: pointsAsc.map((pp) => pp.price),
+        tension: 0.25,
+        borderColor: "#6ea8fe",       // light blue line
+        backgroundColor: "rgba(110,168,254,0.15)",
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#6ea8fe",
+        pointBorderColor: "#0b0f1d"
+      }
+    ]
+  };
+
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: "#e8eaf0"
+        }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#a7aec2"
+        },
+        grid: {
+          color: "rgba(255,255,255,0.05)"
+        }
+      },
+      y: {
+        ticks: {
+          color: "#a7aec2",
+          callback: (v) => `$${v}`
+        },
+        grid: {
+          color: "rgba(255,255,255,0.05)"
+        }
+      }
+    }
+  };
+
+
 
   return (
     <div className="stack">
@@ -137,21 +219,28 @@ export default function ProductDetail() {
 
         <section className="card">
           <h3>Price History</h3>
+
           {data.pricePoints.length === 0 ? (
             <p className="subtle">No price points yet.</p>
           ) : (
-            <ul className="list">
-              {data.pricePoints.map((pp) => (
-                <li key={pp.id} className="row">
-                  <div className="rowMain">
-                    <div className="rowTitle">${pp.price.toFixed(2)}</div>
-                    <div className="subtle">
-                      {pp.condition} • {pp.platform} • {pp.recordedAt}
+            <>
+              <div className="chartWrap">
+                <Line data={chartData} options={chartOptions} />
+              </div>
+
+              <ul className="list" style={{ marginTop: 12 }}>
+                {data.pricePoints.map((pp) => (
+                  <li key={pp.id} className="row">
+                    <div className="rowMain">
+                      <div className="rowTitle">${pp.price.toFixed(2)}</div>
+                      <div className="subtle">
+                        {pp.condition} • {pp.platform} • {pp.recordedAt}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </section>
       </div>
