@@ -1,0 +1,69 @@
+:root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+body { margin: 0; background: #0b0d12; color: #e8eaf0; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.nav a { padding: 8px 10px; border-radius: 10px; background: #141827; }
+.nav a:hover { background: #1a2040; text-decoration: none; }
+
+.subtle { color: #a7aec2; }
+.footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid #1a1f33; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: #101527;
+  border: 1px solid #1a1f33;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.form { display: grid; gap: 10px; }
+label { display: grid; gap: 6px; font-size: 14px; }
+input, select {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #232a45;
+  background: #0b0f1d;
+  color: #e8eaf0;
+  outline: none;
+}
+input:focus, select:focus { border-color: #3a4aa7; }
+
+.btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #2a3359;
+  background: #1a2a7a;
+  color: white;
+  cursor: pointer;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn.ghost { background: transparent; }
+.error { color: #ff6b6b; margin: 0; }
+
+.list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #0b0f1d;
+  border: 1px solid #1a1f33;
+}
+.rowTitle { font-weight: 650; }
+.rowMain { display: grid; gap: 2px; }
+
+.stack { display: grid; gap: 16px; }
+
+.topRow { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.scoreBox { text-align: right; }
+.score { font-size: 40px; font-weight: 800; line-height: 1; }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+@media (max-width: 900px) { .stats { grid-template-columns: 1fr; } }
+.stat { padding: 12px; border-radius: 14px; border: 1px solid #1a1f33; background: #0b0f1d; }
+.big { font-size: 18px; font-weight: 700; margin-top: 4px; }
